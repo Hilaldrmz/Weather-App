@@ -28,7 +28,7 @@
                 </div>
             </div>
         </div>
-        <!-- <AddCity/> -->
+        <AddCity/>
     </main>
 </template>
 
@@ -51,6 +51,7 @@ function fetchWeather(e) {
                 setResults(results);
                 getWindDirection();
                 dateBuilder();
+                query.value = '';
             })
             .catch((error) => console.error('Error fetching weather:', error));
     }
@@ -92,8 +93,14 @@ function dateBuilder() {
 
 <style lang="scss" scoped>
 main {
-    min-height: 100dvh;
-    padding: 25px;
+    height: 100vh;
+    height: 100dvh;
+    height: 100svh;
+    width: 100vw;
+    width: 100dvw;
+    width: 100svw;
+    overflow: hidden;
+
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.75));
     background-image: url(../assets/cold-bg.jpg);
     background-size: cover;
