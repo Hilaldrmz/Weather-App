@@ -2,7 +2,7 @@
 
 import {createRouter, createWebHistory} from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import AddCity from "../components/AddCity.vue";
+import AddLocations from "../components/AddLocations.vue";
 import NotFoundView from "../views/404View.vue";
 
 
@@ -19,9 +19,9 @@ const router = createRouter({
             redirect: "/"
         },
         {
-            path:"/cities",
-            name: 'cities',
-            component: AddCity
+            path:"/locations",
+            name: 'locations',
+            component: AddLocations
         },
         {
             path:"/:catchall(.*)*",

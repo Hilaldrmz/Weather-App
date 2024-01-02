@@ -1,10 +1,14 @@
 <template>
     <main id="main" :class="typeof weather.main != 'undefined' && weather.main.temp > 16 ? 'warm' : ''">
         <div class="search-box">
-            <input v-model="query" @keypress="fetchWeather" type="text" class="search-bar" placeholder="Search..." />
+            <input v-model="query" @keyup.enter="fetchWeather" type="text" class="search-bar" placeholder="Search..." />
         </div>
         <div class="weather-wrap" v-if="(typeof weather.main != 'undefined')">
+            <div class="btn-div"> <button class="add-location-btn" type="button"
+                    @click="saveLocationsToLocalStorage">+</button>
+            </div>
             <div class="location-box">
+                <img :src="`https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`" alt="">
                 <div class="location">{{ weather.name }}, {{ weather.sys?.country }}</div>
                 <div class="date">{{ currentDate }}</div>
             </div>
@@ -28,33 +32,33 @@
                 </div>
             </div>
         </div>
-        <AddCity/>
+        <AddLocations :key="componentKey" class="add-locations"/>
     </main>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
-import AddCity from "../components/AddCity.vue";
+import { reactive, ref, toRefs, onMounted } from 'vue';
+import AddLocations from "../components/AddLocations.vue";
 
 
 const api_key = ref('60b13f09b65a460b1fb23cbd235c9955');
 const url_base = ref('https://api.openweathermap.org/data/2.5');
 const query = ref('');
-const weather = reactive({});
+const weather = reactive([]);
 const windDirection = ref('');
 
-function fetchWeather(e) {
-    if (e.key === 'Enter') {
-        fetch(`${url_base.value}/weather?q=${query.value}&units=metric&APPID=${api_key.value}`)
-            .then((res) => res.json())
-            .then((results) => {
-                setResults(results);
-                getWindDirection();
-                dateBuilder();
-                query.value = '';
-            })
-            .catch((error) => console.error('Error fetching weather:', error));
-    }
+function fetchWeather() {
+    fetch(`${url_base.value}/weather?q=${query.value}&units=metric&APPID=${api_key.value}`)
+        .then((res) => res.json())
+        .then((results) => {
+            setResults(results);
+            getWindDirection();
+            dateBuilder();
+            // setBrightness();
+            query.value = '';
+        })
+        .catch((error) => console.error('Error fetching weather:', error));
+
 }
 
 function setResults(results) {
@@ -70,8 +74,8 @@ const getWindDirection = () => {
     console.log('Weather in func:', weather);
 };
 
-const currentDate = ref('')
-
+const currentDate = ref('');
+const currentHour = ref(0);
 function dateBuilder() {
     const dateTime = new Date(weather.dt * 1000);
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -85,39 +89,116 @@ function dateBuilder() {
     const minute = dateTime.getMinutes();
 
     currentDate.value = `${day} ${date} ${month} ${year}\nLast update: ${hour}:${minute} `;
+    currentHour.value = hour;
+}
+
+function setBrightness() {
+    let brightnessValue = 100;
+
+    if (currentHour.value >= 6 && currentHour.value < 12) {
+        brightnessValue = 100; // Sabahları parlaklık artır
+        console.log(currentHour.value)
+    } else if (currentHour.value >= 18 && currentHour.value < 22) {
+        console.log(currentHour.value)
+        brightnessValue = 0; // Akşamları parlaklık azalt
+    }
+
+    style.setProperty('--background-brightness', `${brightnessValue}%`);
 }
 
 
+const componentKey = ref(0);
+function saveLocationsToLocalStorage() {
+    // localStorage.setItem('myLocations', JSON.stringify(weather));
+    const savedWeather = JSON.parse(localStorage.getItem('myLocations')) || {};
+
+    const weatherRefs = toRefs(weather);
+    const weatherObject = {};
+
+    for (const prop in weatherRefs) {
+        weatherObject[prop] = weatherRefs[prop].value;
+    }
+
+    const uniqueKey = `${weatherObject.name}`; // Kombinasyon olarak şehir adı ve ID kullanılabilir
+
+    if (!savedWeather[uniqueKey]) {
+        savedWeather[uniqueKey] = weatherObject;
+        localStorage.setItem('myLocations', JSON.stringify(savedWeather));
+    } else {
+        console.log('Already saved.');
+    }
+    componentKey.value++;
+}
+
+onMounted(() => {
+    fetchWeatherByGeolocation();
+});
+function fetchWeatherByGeolocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const { latitude, longitude } = position.coords;
+            fetch(`${url_base.value}/weather?lat=${latitude}&lon=${longitude}&units=metric&APPID=${api_key.value}`)
+                .then((res) => res.json())
+                .then((results) => {
+                    setResults(results);
+                    getWindDirection();
+                    dateBuilder();
+                })
+                .catch((error) => console.error('Error fetching weather:', error));
+        }, (error) => {
+            console.error('Error getting location:', error);
+            fetch(`${url_base.value}/weather?q=Istanbul&units=metric&APPID=${api_key.value}`)
+                .then((res) => res.json())
+                .then((results) => {
+                    setResults(results);
+                    getWindDirection();
+                    dateBuilder();
+                })
+                .catch((error) => console.error('Error fetching weather for default location:', error));
+        });
+    } else {
+        console.error('Geolocation is not supported by this browser.');
+    }
+}
 
 </script>
 
 <style lang="scss" scoped>
 main {
-    height: 100vh;
-    height: 100dvh;
-    height: 100svh;
-    width: 100vw;
-    width: 100dvw;
-    width: 100svw;
-    overflow: hidden;
+    min-height: 96.7vh;
+    min-height: 96.7dvh;
+    min-height: 96.7svh;
+
+    min-width: 100vw;
+    min-width: 100dvw;
+    min-width: 100svw;
 
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.75));
-    background-image: url(../assets/cold-bg.jpg);
+    background-image: url(../assets/sky.jpg);
     background-size: cover;
-    background-position: bottom;
-    transition: 0.4s;
+    // background-position: bottom;
+    filter: brightness(var(--background-brightness, 100%));
+    // backdrop-filter: brightness(var(--background-brightness, 100%));
 
     &.warm {
-        background-image: url(../assets/warm-bg.jpg);
+        background-image: url(../assets/sky.jpg);
+        // Arka plan resmini daha belirgin yapmak için aşağıdaki özellikleri kullanabilirsiniz
+        filter: brightness(120%); // Parlaklığı artırabilirsiniz (örneğin yüzde 120)
+        // veya
+        // opacity: 0.9; // Saydamlığı azaltabilirsiniz (örneğin 0.9)
     }
 
     .search-box {
-        width: 100%;
         margin-bottom: 30px;
+        margin-top: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
 
         .search-bar {
             display: block;
-            width: 100%;
+            width: 95%;
             padding: 15px;
 
             color: #313131;
@@ -141,7 +222,39 @@ main {
         }
     }
 
+    .btn-div {
+        display: flex;
+        justify-content: flex-end;
+        align-self: flex-start;
+
+        .add-location-btn {
+            text-shadow: 3px 6px rgba(255, 255, 255, 0.25);
+            background-color: rgba(255, 255, 255, 0.25);
+            border-radius: 8%;
+            border-radius: 0 16px 16px 16px;
+            margin: 30px 0;
+            box-shadow: 2px 4px rgba(0, 0, 0, 0.25);
+            border: none;
+            font-weight: bolder;
+            font-size: x-large;
+            height: 30px;
+            cursor: pointer;
+            margin-right: 50px;
+        }
+    }
+
     .location-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            max-height: 30px;
+            background-color: #00000030;
+            border-radius: 60% 0 50% 0;
+        }
+
         .location {
             color: #fff;
             font-size: 32px;
@@ -160,53 +273,71 @@ main {
         }
     }
 
+    .weather-wrap {
+        margin-bottom: 50px;
+        height: auto;
+        .weather-box {
+            text-align: center;
+            color: #fff;
 
-    .weather-box {
-        text-align: center;
-        color: #fff;
+            .temp {
+                display: inline-block;
+                padding: 10px 25px;
 
-        .temp {
-            display: inline-block;
-            padding: 10px 25px;
+                font-size: 102px;
+                font-weight: 900;
 
-            font-size: 102px;
-            font-weight: 900;
+                text-shadow: 3px 6px rgba(255, 255, 255, 0.25);
+                background-color: rgba(255, 255, 255, 0.25);
+                border-radius: 8%;
+                margin: 30px 0;
 
-            text-shadow: 3px 6px rgba(255, 255, 255, 0.25);
-            background-color: rgba(255, 255, 255, 0.25);
-            border-radius: 8%;
-            margin: 30px 0;
+                box-shadow: 3px 6px rgba(0, 0, 0, 0.25);
+            }
 
-            box-shadow: 3px 6px rgba(0, 0, 0, 0.25);
-        }
+            .weather {
+                font-size: 48px;
+                font-weight: 700;
+                font-style: italic;
+                text-shadow: 3px 6px rgbs(0, 0, 0, 0.25);
 
-        .weather {
-            font-size: 48px;
-            font-weight: 700;
-            font-style: italic;
-            text-shadow: 3px 6px rgbs(0, 0, 0, 0.25);
+            }
 
-        }
+            .weather-detail {
+                font-size: 15px;
+                font-weight: 500;
+                font-style: italic;
+                text-shadow: 3px 6px rgbs(0, 0, 0, 0.25);
+                margin-bottom: 10px;
+            }
 
-        .weather-detail {
-            font-size: 15px;
-            font-weight: 500;
-            font-style: italic;
-            text-shadow: 3px 6px rgbs(0, 0, 0, 0.25);
-            margin-bottom: 10px;
-        }
+            .details-wrap {
+                font-size: 15px;
+                font-weight: 100;
+                font-style: italic;
+                text-shadow: 3px 6px rgbs(0, 0, 0, 0.25);
 
-        .details-wrap {
-            font-size: 15px;
-            font-weight: 100;
-            font-style: italic;
-            text-shadow: 3px 6px rgbs(0, 0, 0, 0.25);
+                .wind-line>* {
+                    margin: 0 5px 0 5px;
+                }
 
-            span+span {
-                margin: 2px;
+                span+span {
+                    margin: 2px;
+                }
             }
         }
     }
 
+    .add-locations {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 40svh;
+    overflow: auto;
+    
+    @media (max-height: 1280px) {
+        position: relative;
+}
+}
 }
 </style>
