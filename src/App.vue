@@ -2,14 +2,18 @@
 import { RouterView } from "vue-router";
 import './scss/main.css';
 
-// import Nav from "./components/Nav.vue";
+import Footer from "./components/Footer.vue";
 </script>
 
 <template>
-  <div>
+  <div class="app-container">
     <!-- <Nav /> -->
     <RouterView />
 
-    
+    <Footer />
   </div>
 </template>
+
+<style lang="scss" scoped>
+
+</style>
