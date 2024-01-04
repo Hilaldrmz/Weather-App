@@ -8,9 +8,12 @@
 
 <style scoped>
 .footer {
+    display: flex;
     background-color: #00000036;
     padding: 10px;
     text-align: center;
+
+    z-index: 100;
 }
 
 .container {
