@@ -4,13 +4,12 @@
             <input v-model="query" @keyup.enter="fetchWeather" type="text" class="search-bar" placeholder="Search..." />
         </div>
         <div class="weather-wrap" v-if="(typeof weather.main != 'undefined')">
-            <div class="btn-div"> <button class="add-location-btn" type="button"
-                    @click="saveLocationsToLocalStorage">+</button>
+            <div class="btn-div">
+                <button class="add-location-btn" type="button" @click="saveLocationsToLocalStorage">+</button>
             </div>
             <div class="location-box">
                 <img :src="`https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`" alt="">
                 <div class="location">{{ weather.name }}, {{ weather.sys?.country }}</div>
-                <div class="date">{{ currentDate }}</div>
             </div>
             <div class="weather-box">
                 <div class="temp">{{ Math.round(weather.main.temp) }}°C</div>
@@ -32,13 +31,14 @@
                 </div>
             </div>
         </div>
-        <AddLocations :key="componentKey" class="add-locations"/>
+        <AddLocations :key="componentKey" class="add-locations" />
     </main>
 </template>
 
 <script setup>
-import { reactive, ref, toRefs, onMounted } from 'vue';
-import AddLocations from "../components/AddLocations.vue";
+import { reactive, ref, toRefs, onMounted, defineAsyncComponent } from 'vue';
+// import AddLocations from "../components/AddLocations.vue";
+const AddLocations = defineAsyncComponent(() => import('../components/AddLocations.vue'))
 
 
 const api_key = ref('60b13f09b65a460b1fb23cbd235c9955');
@@ -53,8 +53,6 @@ function fetchWeather() {
         .then((results) => {
             setResults(results);
             getWindDirection();
-            dateBuilder();
-            // setBrightness();
             query.value = '';
         })
         .catch((error) => console.error('Error fetching weather:', error));
@@ -73,39 +71,6 @@ const getWindDirection = () => {
     windDirection.value = directions[index];
     console.log('Weather in func:', weather);
 };
-
-const currentDate = ref('');
-const currentHour = ref(0);
-function dateBuilder() {
-    const dateTime = new Date(weather.dt * 1000);
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-    const day = days[dateTime.getDay()];
-    const date = dateTime.getDate();
-    const month = months[dateTime.getMonth()];
-    const year = dateTime.getFullYear();
-    const hour = dateTime.getHours();
-    const minute = dateTime.getMinutes();
-
-    currentDate.value = `${day} ${date} ${month} ${year}\nLast update: ${hour}:${minute} `;
-    currentHour.value = hour;
-}
-
-function setBrightness() {
-    let brightnessValue = 100;
-
-    if (currentHour.value >= 6 && currentHour.value < 12) {
-        brightnessValue = 100; // Sabahları parlaklık artır
-        console.log(currentHour.value)
-    } else if (currentHour.value >= 18 && currentHour.value < 22) {
-        console.log(currentHour.value)
-        brightnessValue = 0; // Akşamları parlaklık azalt
-    }
-
-    style.setProperty('--background-brightness', `${brightnessValue}%`);
-}
-
 
 const componentKey = ref(0);
 function saveLocationsToLocalStorage() {
@@ -142,7 +107,6 @@ function fetchWeatherByGeolocation() {
                 .then((results) => {
                     setResults(results);
                     getWindDirection();
-                    dateBuilder();
                 })
                 .catch((error) => console.error('Error fetching weather:', error));
         }, (error) => {
@@ -152,7 +116,6 @@ function fetchWeatherByGeolocation() {
                 .then((results) => {
                     setResults(results);
                     getWindDirection();
-                    dateBuilder();
                 })
                 .catch((error) => console.error('Error fetching weather for default location:', error));
         });
@@ -176,17 +139,7 @@ main {
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.75));
     background-image: url(../assets/sky.jpg);
     background-size: cover;
-    // background-position: bottom;
     filter: brightness(var(--background-brightness, 100%));
-    // backdrop-filter: brightness(var(--background-brightness, 100%));
-
-    &.warm {
-        background-image: url(../assets/sky.jpg);
-        // Arka plan resmini daha belirgin yapmak için aşağıdaki özellikleri kullanabilirsiniz
-        filter: brightness(120%); // Parlaklığı artırabilirsiniz (örneğin yüzde 120)
-        // veya
-        // opacity: 0.9; // Saydamlığı azaltabilirsiniz (örneğin 0.9)
-    }
 
     .search-box {
         margin-bottom: 30px;
@@ -227,19 +180,19 @@ main {
         justify-content: flex-end;
         align-self: flex-start;
 
+
         .add-location-btn {
             text-shadow: 3px 6px rgba(255, 255, 255, 0.25);
             background-color: rgba(255, 255, 255, 0.25);
-            border-radius: 8%;
             border-radius: 0 16px 16px 16px;
             margin: 30px 0;
             box-shadow: 2px 4px rgba(0, 0, 0, 0.25);
             border: none;
             font-weight: bolder;
             font-size: x-large;
-            height: 30px;
             cursor: pointer;
             margin-right: 50px;
+            text-shadow: none;
         }
     }
 
@@ -276,6 +229,7 @@ main {
     .weather-wrap {
         margin-bottom: 50px;
         height: auto;
+
         .weather-box {
             text-align: center;
             color: #fff;
@@ -329,15 +283,15 @@ main {
     }
 
     .add-locations {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 40svh;
-    overflow: auto;
-    
-    @media (max-height: 1280px) {
-        position: relative;
-}
-}
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 40svh;
+        overflow: auto;
+
+        @media (max-height: 1280px) {
+            position: relative;
+        }
+    }
 }
 </style>
