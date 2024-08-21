@@ -1,6 +1,5 @@
 <script setup>
 import { defineAsyncComponent } from 'vue';
-import { useRoute } from "vue-router";
 import './scss/main.css';
 
 import Footer from "./components/Footer.vue";

@@ -172,6 +172,7 @@ main {
         justify-content: center;
         height: max-content;
         margin-bottom: 3dvh;
+        height: 517px;
 
 
         .btn-div {
