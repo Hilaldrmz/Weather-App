@@ -16,7 +16,7 @@
 }
 
 body {
-  min-height: 100vh;
+  min-height: 100dvh;
   color: whitesmoke;
   background: linear-gradient(10deg, hsl(289, 47%, 45%) 0%, hsl(255, 41%, 45%) 28%, hsl(244, 41%, 37%) 51%, hsl(226, 45%, 16%) 90%);
   transition: color 0.5s, background-color 0.5s;
@@ -34,14 +34,12 @@ body {
   font-weight: normal;
   place-items: center;
   max-width: 100dvw;
-  max-width: 100svw;
   min-height: 100dvh;
-  min-height: 100svh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: start;
+  justify-content: space-between;
   align-content: center;
 }
 
@@ -61,6 +59,7 @@ body {
 
 ::-webkit-scrollbar-corner {
   border-radius: 10px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-track {

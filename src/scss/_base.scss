@@ -20,7 +20,7 @@ $shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 }
 
 body {
-  min-height: 100vh;
+  min-height: 100dvh;
   color: $text-light;
 
   background: linear-gradient(10deg, hsla(289, 47%, 45%, 1) 0%, hsla(255, 41%, 45%, 1) 28%, hsla(244, 41%, 37%, 1) 51%, hsla(226, 45%, 16%, 1) 90%);
