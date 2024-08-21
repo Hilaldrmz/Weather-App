@@ -129,9 +129,9 @@ function fetchWeatherByGeolocation() {
 
 <style lang="scss" scoped>
 main {
-    min-height: 96.7vh;
-    min-height: 96.7dvh;
-    min-height: 96.7svh;
+    min-height: 92.4vh;
+    min-height: 92.4dvh;
+    min-height: 92.4svh;
 
     min-width: 100vw;
     min-width: 100dvw;
