@@ -131,12 +131,9 @@ function fetchWeatherByGeolocation() {
 main {
     min-height: 92.4vh;
     min-height: 92.4dvh;
-    min-height: 92.4svh;
 
     min-width: 100vw;
     min-width: 100dvw;
-    min-width: 100svw;
-
 
     .search-box {
         margin-bottom: 30px;
@@ -149,7 +146,7 @@ main {
         .search-bar {
             display: block;
             width: 50dvw;
-            padding: 15px;
+            padding: 10px;
             color: $text-light;
             font-size: 20px;
 
