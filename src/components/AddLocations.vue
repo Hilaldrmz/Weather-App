@@ -6,7 +6,7 @@
 
                 <div class="bg-video-div">
                     <video class="background-video" autoplay loop muted>
-                        <source :src="`/videos/${location.weather[0].icon}.mp4`" type="video/mp4" />
+                        <source :src="getImagePath(`/videos/${location.weather[0].icon}.mp4`)" type="video/mp4" />
 
                     </video>
                 </div>
@@ -44,6 +44,16 @@
 
 <script setup>
 import { reactive, ref, onMounted } from 'vue';
+
+function getImagePath(imagePath) {
+    const baseURL = import.meta.env.BASE_URL;
+
+    if (import.meta.env.PROD !== true) {
+        return imagePath;
+    } else {
+        return baseURL + imagePath;
+    }
+}
 
 const myLocations = reactive([]);
 const windDirection = ref('');
