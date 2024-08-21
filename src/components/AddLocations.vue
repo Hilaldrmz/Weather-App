@@ -67,9 +67,6 @@ const getMyLocationsFromLocalStorage = () => {
     width: 100vw;
     width: 100dvw;
     width: 100svw;
-
-    position: fixed;
-    bottom: 0;
     overflow: auto;
 
     @media (max-height: 1280px) {

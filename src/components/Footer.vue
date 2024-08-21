@@ -11,19 +11,19 @@
     display: flex;
     padding: 10px;
     text-align: center;
-    width: 50dvw;
+    min-width: 50dvw;
     border-radius: 45px 45px 0 0;
-
+    margin-top: 4dvh;
     z-index: 100;
-    transition: 0.4s;
 }
 
 .container {
-    max-width: 960px;
+    /* max-width: 960px; */
     margin: 0 auto;
 }
 
 .text-muted {
     color: whitesmoke;
+    white-space: nowrap;
 }
 </style>
