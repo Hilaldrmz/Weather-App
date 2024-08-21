@@ -2,7 +2,7 @@
     <div class="main">
         <div class="my-locations-container">
 
-            <div v-for="location in myLocations.value" :key="location.main" class="my-locations">
+            <div v-for="location in myLocations.value" :key="location.main" class="my-locations glassmorphism">
 
                 <div class="bg-video-div">
                     <video class="background-video" autoplay loop muted>
@@ -63,14 +63,18 @@ const getMyLocationsFromLocalStorage = () => {
 
 <style lang="scss" scoped>
 .main {
-
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.774) 0%, rgba(0, 0, 0, 0.157) 71%, rgba(0, 0, 0, 0) 100%);
-    grid-template-rows: 1fr auto;
-    /* 1fr ile boş alanı doldurur, auto ile içeriği en alta yerleştirir */
+    grid-template-rows: 1fr auto; /* 1fr ile boş alanı doldurur, auto ile içeriği en alta yerleştirir */
     width: 100vw;
     width: 100dvw;
     width: 100svw;
 
+    position: fixed;
+    bottom: 0;
+    overflow: auto;
+
+    @media (max-height: 1280px) {
+        position: relative;
+    }
 
 
     .my-locations-container {
@@ -84,15 +88,14 @@ const getMyLocationsFromLocalStorage = () => {
             display: grid;
             border-radius: 1rem;
             overflow: hidden;
-            // background-image: url(../assets/warm-bg.jpg);
             width: 200px;
             height: 280px;
-            // height: 40svh;
             text-shadow: 3px 6px rgbs(0, 0, 0, 0.25);
-            color: #fff;
+            color: $text-light;
             font-weight: bold;
             text-align: end;
             align-content: space-between;
+            border: none;
 
             .bg-video-div {
                 position: absolute;
@@ -162,4 +165,5 @@ const getMyLocationsFromLocalStorage = () => {
             }
         }
     }
-}</style>
+}
+</style>

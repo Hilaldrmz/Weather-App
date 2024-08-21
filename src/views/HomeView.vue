@@ -1,11 +1,13 @@
 <template>
     <main id="main" :class="typeof weather.main != 'undefined' && weather.main.temp > 16 ? 'warm' : ''">
         <div class="search-box">
-            <input v-model="query" @keyup.enter="fetchWeather" type="text" class="search-bar" placeholder="Search..." />
+            <input v-model="query" @keyup.enter="fetchWeather" type="text" class="search-bar glassmorphism"
+                placeholder="Search..." />
         </div>
         <div class="weather-wrap" v-if="(typeof weather.main != 'undefined')">
             <div class="btn-div">
-                <button class="add-location-btn" type="button" @click="saveLocationsToLocalStorage">+</button>
+                <button class="add-location-btn glassmorphism" type="button"
+                    @click="saveLocationsToLocalStorage">+</button>
             </div>
             <div class="location-box">
                 <img :src="`https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`" alt="">
@@ -31,7 +33,7 @@
                 </div>
             </div>
         </div>
-        <AddLocations :key="componentKey" class="add-locations" />
+        <AddLocations :key="componentKey" />
     </main>
 </template>
 
@@ -56,7 +58,6 @@ function fetchWeather() {
             query.value = '';
         })
         .catch((error) => console.error('Error fetching weather:', error));
-
 }
 
 function setResults(results) {
@@ -136,10 +137,6 @@ main {
     min-width: 100dvw;
     min-width: 100svw;
 
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.75));
-    background-image: url(../assets/sky.jpg);
-    background-size: cover;
-    filter: brightness(var(--background-brightness, 100%));
 
     .search-box {
         margin-bottom: 30px;
@@ -151,109 +148,102 @@ main {
 
         .search-bar {
             display: block;
-            width: 95%;
+            width: 50dvw;
             padding: 15px;
-
-            color: #313131;
+            color: $text-light;
             font-size: 20px;
 
             appearance: none;
-            border: none;
             outline: none;
-            background: none;
 
-            box-shadow: 0 0 0 rgba(0, 0, 0, 0.25);
-            background-color: rgba(255, 255, 255, 0.15);
             border-radius: 0 16px 0 16px;
             transition: 0.4s;
 
             &:focus {
-                box-shadow: 0 0 16px rgbs(0, 0, 0, 0.25);
-                background-color: rgba(255, 255, 255, 0.75);
                 border-radius: 16px 0 16px 0;
             }
         }
     }
 
-    .btn-div {
-        display: flex;
-        justify-content: flex-end;
-        align-self: flex-start;
-
-
-        .add-location-btn {
-            text-shadow: 3px 6px rgba(255, 255, 255, 0.25);
-            background-color: rgba(255, 255, 255, 0.25);
-            border-radius: 0 16px 16px 16px;
-            margin: 30px 0;
-            box-shadow: 2px 4px rgba(0, 0, 0, 0.25);
-            border: none;
-            font-weight: bolder;
-            font-size: x-large;
-            cursor: pointer;
-            margin-right: 50px;
-            text-shadow: none;
-        }
-    }
-
-    .location-box {
+    .weather-wrap {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        height: max-content;
+        margin-bottom: 3dvh;
 
-        img {
-            max-height: 30px;
-            background-color: #00000030;
-            border-radius: 60% 0 50% 0;
+
+        .btn-div {
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            align-self: flex-end;
+
+            .add-location-btn {
+                border-radius: 0 16px 16px 16px;
+                margin: 30px 0;
+                font-weight: bolder;
+                font-size: x-large;
+                cursor: pointer;
+                margin-right: 50px;
+            }
         }
 
-        .location {
-            color: #fff;
-            font-size: 32px;
-            font-weight: 500;
-            text-align: center;
-            text-shadow: 1px 3px rgbs(0, 0, 0, 0.25);
-        }
+        .location-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
 
-        .date {
-            color: #fff;
-            font-size: 20px;
-            font-weight: 300;
-            font-style: italic;
-            text-align: center;
-            white-space: pre-line;
-        }
-    }
+            img {
+                max-height: 30px;
+                background-color: #00000030;
+                border-radius: 60% 0 50% 0;
+            }
 
-    .weather-wrap {
-        margin-bottom: 50px;
-        height: auto;
+            .location {
+                color: whitesmoke;
+                font-size: 32px;
+                font-weight: 500;
+                text-align: center;
+                text-shadow: 1px 3px rgbs(0, 0, 0, 0.25);
+            }
+
+            .date {
+                color: whitesmoke;
+                font-size: 20px;
+                font-weight: 300;
+                font-style: italic;
+                text-align: center;
+                white-space: pre-line;
+            }
+        }
 
         .weather-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
             text-align: center;
-            color: #fff;
+            color: $text-light;
 
             .temp {
                 display: inline-block;
                 padding: 10px 25px;
 
-                font-size: 102px;
+                font-size: 100px;
                 font-weight: 900;
 
-                text-shadow: 3px 6px rgba(255, 255, 255, 0.25);
-                background-color: rgba(255, 255, 255, 0.25);
-                border-radius: 8%;
-                margin: 30px 0;
-
-                box-shadow: 3px 6px rgba(0, 0, 0, 0.25);
+                text-shadow: 5px 5px 32px rgba(31, 38, 135, 0.37);
             }
 
             .weather {
                 font-size: 48px;
                 font-weight: 700;
                 font-style: italic;
-                text-shadow: 3px 6px rgbs(0, 0, 0, 0.25);
+                text-shadow: 5px 5px 32px rgba(31, 38, 135, 0.37);
 
             }
 
@@ -261,15 +251,14 @@ main {
                 font-size: 15px;
                 font-weight: 500;
                 font-style: italic;
-                text-shadow: 3px 6px rgbs(0, 0, 0, 0.25);
-                margin-bottom: 10px;
+                text-shadow: 5px 5px 32px rgba(31, 38, 135, 0.37);
             }
 
             .details-wrap {
                 font-size: 15px;
                 font-weight: 100;
                 font-style: italic;
-                text-shadow: 3px 6px rgbs(0, 0, 0, 0.25);
+                text-shadow: 5px 5px 32px rgba(31, 38, 135, 0.37);
 
                 .wind-line>* {
                     margin: 0 5px 0 5px;
@@ -279,18 +268,6 @@ main {
                     margin: 2px;
                 }
             }
-        }
-    }
-
-    .add-locations {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        height: 40svh;
-        overflow: auto;
-
-        @media (max-height: 1280px) {
-            position: relative;
         }
     }
 }

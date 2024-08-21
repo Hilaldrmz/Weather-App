@@ -10,7 +10,6 @@ const RouterViewAsync = defineAsyncComponent(() => import('vue-router').then(m =
 </script>
 
 <template>
-  <div class="app-container">
     <Suspense>
       <template #default>
         <RouterViewAsync />
@@ -20,7 +19,7 @@ const RouterViewAsync = defineAsyncComponent(() => import('vue-router').then(m =
       </template>
     </Suspense>
     <Footer />
-  </div>
+
 </template>
 
 <style lang="scss" scoped>

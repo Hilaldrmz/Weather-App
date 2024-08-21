@@ -1,5 +1,5 @@
 <template>
-    <footer class="footer sticky-footer">
+    <footer class="footer sticky-footer glassmorphism">
         <div class="container">
             <span class="text-muted">© 2022 Weather App. All rights reserved.</span>
         </div>
@@ -9,11 +9,13 @@
 <style scoped>
 .footer {
     display: flex;
-    background-color: #00000036;
     padding: 10px;
     text-align: center;
+    width: 50dvw;
+    border-radius: 45px 45px 0 0;
 
     z-index: 100;
+    transition: 0.4s;
 }
 
 .container {
@@ -22,6 +24,6 @@
 }
 
 .text-muted {
-    color: #6c757d;
+    color: whitesmoke;
 }
 </style>
