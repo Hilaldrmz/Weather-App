@@ -19,5 +19,12 @@ export default defineConfig({
         additionalData: `@import "./src/scss/main.scss";`
       }
     }
+  },
+
+  base: process.env.NODE_ENV === 'production'
+    ? '/Weather-App/'
+    : '/',
+  build: {
+    outDir: 'docs'
   }
 })
