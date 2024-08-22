@@ -2,7 +2,8 @@
     <div class="main">
         <div class="my-locations-container">
 
-            <div v-for="location in myLocations.value" :key="location.main" class="my-locations glassmorphism">
+            <div v-for="location in myLocations.value" :key="location.main" class="my-locations glassmorphism"
+                @click="toggleOptionsMenu">
 
                 <div class="bg-video-div">
                     <video class="background-video" autoplay loop muted>
@@ -37,6 +38,12 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="overlay" v-if="optionsMenu">
+                    <div class="options-menu">
+                        <button class="delete-btn glassmorphism" @click="deleteLocation(location.name)">Delete</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -69,11 +76,25 @@ const getMyLocationsFromLocalStorage = () => {
     };
 };
 
+const optionsMenu = ref(false);
+
+const toggleOptionsMenu = () => {
+    optionsMenu.value = !optionsMenu.value;
+};
+
+function deleteLocation(locationName) {
+    if (myLocations.value[locationName]) {
+        delete myLocations.value[locationName];
+        localStorage.setItem('myLocations', JSON.stringify(myLocations.value));
+    }
+}
+
 </script>
 
 <style lang="scss" scoped>
 .main {
-    grid-template-rows: 1fr auto; /* 1fr ile boş alanı doldurur, auto ile içeriği en alta yerleştirir */
+    grid-template-rows: 1fr auto;
+    /* 1fr ile boş alanı doldurur, auto ile içeriği en alta yerleştirir */
     width: 100vw;
     width: 100dvw;
     width: 100svw;
@@ -103,6 +124,12 @@ const getMyLocationsFromLocalStorage = () => {
             text-align: end;
             align-content: space-between;
             border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+
+            &:active {
+                transform: scale(0.95);
+            }
 
             .bg-video-div {
                 position: absolute;
@@ -167,6 +194,39 @@ const getMyLocationsFromLocalStorage = () => {
                 .details-wrap {
                     span+span {
                         margin: 2px;
+                    }
+                }
+            }
+
+
+            .overlay {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background-color: #00000094;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: default;
+
+
+                .options-menu {
+                    display: flex;
+                    flex-direction: column;
+
+                    .delete-btn {
+                        height: 20px;
+                        width: 70px;
+                        background: brown;
+                        color: white;
+                        font-size: 1cqi;
+                        cursor: pointer;
+
+                        &:hover {}
+
+                        &:active {}
+
+                        &:focus {}
                     }
                 }
             }
